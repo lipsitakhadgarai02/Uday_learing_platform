@@ -1,0 +1,72 @@
+﻿
+> udaya@0.1.0 build
+> next build --turbopack
+
+   Γû▓ Next.js 15.5.12 (Turbopack)
+
+   Creating an optimized production build ...
+ Γ£ô Finished writing to disk in 561ms
+ Γ£ô Compiled successfully in 8.4s
+   Linting and checking validity of types ...
+   Collecting page data ...
+node.exe : Error: Please define the 
+MONGODB_URI environment variable inside 
+.env.local
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecif 
+   ied: (Error: Please d...side .env.l  
+  ocal:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCom 
+   mandError
+ 
+    at 
+__TURBOPACK__module__evaluation__ 
+(C:\Lipsita Program Files\Project\udaya_
+gamified-main\.next\server\chunks\[root-
+of-the-server]__4ec0d61c._.js:19:21714)
+    at instantiateModule (C:\Lipsita 
+Program Files\Project\udaya_gamified-mai
+n\.next\server\chunks\[turbopack]_runtim
+e.js:702:9)
+    at getOrInstantiateModuleFromParent 
+(C:\Lipsita Program Files\Project\udaya_
+gamified-main\.next\server\chunks\[turbo
+pack]_runtime.js:725:12)
+    at Context.esmImport [as i] 
+(C:\Lipsita Program Files\Project\udaya_
+gamified-main\.next\server\chunks\[turbo
+pack]_runtime.js:215:20)
+    at 
+__TURBOPACK__module__evaluation__ 
+(C:\Lipsita Program Files\Project\udaya_
+gamified-main\.next\server\chunks\[root-
+of-the-server]__ddd7b2ca._.js:1:1440)
+    at instantiateModule (C:\Lipsita 
+Program Files\Project\udaya_gamified-mai
+n\.next\server\chunks\[turbopack]_runtim
+e.js:702:9)
+    at instantiateRuntimeModule 
+(C:\Lipsita Program Files\Project\udaya_
+gamified-main\.next\server\chunks\[turbo
+pack]_runtime.js:730:12)
+    at getOrInstantiateRuntimeModule 
+(C:\Lipsita Program Files\Project\udaya_
+gamified-main\.next\server\chunks\[turbo
+pack]_runtime.js:743:12)
+    at Object.m (C:\Lipsita Program File
+s\Project\udaya_gamified-main\.next\serv
+er\chunks\[turbopack]_runtime.js:752:18)
+    at Object.<anonymous> (C:\Lipsita 
+Program Files\Project\udaya_gamified-mai
+n\.next\server\app\api\achievements\rout
+e.js:5:3)
+
+> Build error occurred
+[Error: Failed to collect page data for 
+/api/achievements] {
+  type: 'Error'
+}

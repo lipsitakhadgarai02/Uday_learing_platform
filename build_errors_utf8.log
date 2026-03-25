@@ -1,0 +1,533 @@
+﻿
+> udaya@0.1.0 build
+> next build --turbopack
+
+   Γû▓ Next.js 15.5.12 (Turbopack)
+
+   Creating an optimized production build ...
+ Γ£ô Finished writing to disk in 526ms
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecif 
+   ied: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCom 
+   mandError
+ 
+> Build error occurred
+Error: Turbopack build failed with 13 
+errors:
+./app/(auth)/login/page.jsx:16:10
+Ecmascript file had an error
+[0m [90m 14 |[39m [36mimport[39m { 
+toast } [36mfrom[39m 
+[32m'react-hot-toast'[39m[33m;[39m
+ [90m 15 |[39m [36mimport[39m { 
+supabase } [36mfrom[39m 
+[32m'@/lib/supabase'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 16 |[39m 
+[36mimport[39m { toast } 
+[36mfrom[39m 
+[32m'react-hot-toast'[39m[33m;[39m
+ [90m    |[39m          [31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m
+ [90m 17 |[39m [36mimport[39m { 
+[33mFaBookOpen[39m [36mas[39m 
+[33mBookOpen[39m } [36mfrom[39m 
+[32m'react-icons/fa'[39m[33m;[39m
+ [90m 18 |[39m
+ [90m 19 |[39m [36mexport[39m 
+[36mdefault[39m [36mfunction[39m 
+[33mLoginPage[39m() {[0m
+
+the name `toast` is defined multiple 
+times
+
+
+./app/(auth)/login/page.jsx:16:10
+Ecmascript file had an error
+[0m [90m 14 |[39m [36mimport[39m { 
+toast } [36mfrom[39m 
+[32m'react-hot-toast'[39m[33m;[39m
+ [90m 15 |[39m [36mimport[39m { 
+supabase } [36mfrom[39m 
+[32m'@/lib/supabase'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 16 |[39m 
+[36mimport[39m { toast } 
+[36mfrom[39m 
+[32m'react-hot-toast'[39m[33m;[39m
+ [90m    |[39m          [31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m
+ [90m 17 |[39m [36mimport[39m { 
+[33mFaBookOpen[39m [36mas[39m 
+[33mBookOpen[39m } [36mfrom[39m 
+[32m'react-icons/fa'[39m[33m;[39m
+ [90m 18 |[39m
+ [90m 19 |[39m [36mexport[39m 
+[36mdefault[39m [36mfunction[39m 
+[33mLoginPage[39m() {[0m
+
+the name `toast` is defined multiple 
+times
+
+
+./app/(auth)/login/page.jsx:16:10
+Ecmascript file had an error
+[0m [90m 14 |[39m [36mimport[39m { 
+toast } [36mfrom[39m 
+[32m'react-hot-toast'[39m[33m;[39m
+ [90m 15 |[39m [36mimport[39m { 
+supabase } [36mfrom[39m 
+[32m'@/lib/supabase'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 16 |[39m 
+[36mimport[39m { toast } 
+[36mfrom[39m 
+[32m'react-hot-toast'[39m[33m;[39m
+ [90m    |[39m          [31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m
+ [90m 17 |[39m [36mimport[39m { 
+[33mFaBookOpen[39m [36mas[39m 
+[33mBookOpen[39m } [36mfrom[39m 
+[32m'react-icons/fa'[39m[33m;[39m
+ [90m 18 |[39m
+ [90m 19 |[39m [36mexport[39m 
+[36mdefault[39m [36mfunction[39m 
+[33mLoginPage[39m() {[0m
+
+the name `toast` is defined multiple 
+times
+
+
+./app/(auth)/login/page.jsx:16:10
+Ecmascript file had an error
+[0m [90m 14 |[39m [36mimport[39m { 
+toast } [36mfrom[39m 
+[32m'react-hot-toast'[39m[33m;[39m
+ [90m 15 |[39m [36mimport[39m { 
+supabase } [36mfrom[39m 
+[32m'@/lib/supabase'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 16 |[39m 
+[36mimport[39m { toast } 
+[36mfrom[39m 
+[32m'react-hot-toast'[39m[33m;[39m
+ [90m    |[39m          [31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m
+ [90m 17 |[39m [36mimport[39m { 
+[33mFaBookOpen[39m [36mas[39m 
+[33mBookOpen[39m } [36mfrom[39m 
+[32m'react-icons/fa'[39m[33m;[39m
+ [90m 18 |[39m
+ [90m 19 |[39m [36mexport[39m 
+[36mdefault[39m [36mfunction[39m 
+[33mLoginPage[39m() {[0m
+
+the name `toast` is defined multiple 
+times
+
+
+./lib/models/index.js:2:1
+Module not found: Can't resolve 
+'./User.js'
+[0m [90m 1 |[39m [90m// Export all 
+models[39m
+[31m[1m>[22m[39m[90m 2 |[39m 
+[36mexport[39m { [36mdefault[39m 
+[36mas[39m [33mUser[39m } 
+[36mfrom[39m 
+[32m'./User.js'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m { 
+[36mdefault[39m [36mas[39m 
+[33mGameProgress[39m } [36mfrom[39m 
+[32m'./GameProgress.js'[39m[33m;[39m
+ [90m 4 |[39m [36mexport[39m { 
+[36mdefault[39m [36mas[39m 
+[33mAchievement[39m } [36mfrom[39m 
+[32m'./Achievement.js'[39m[33m;[39m
+ [90m 5 |[39m [36mexport[39m { 
+[36mdefault[39m [36mas[39m 
+[33mLeaderboard[39m } [36mfrom[39m 
+[32m'./Leaderboard.js'[39m[33m;[39m[
+0m
+
+
+
+https://nextjs.org/docs/messages/module-
+not-found
+
+
+./lib/db/connect.js:1:1
+Module not found: Can't resolve 
+'mongoose'
+[0m[31m[1m>[22m[39m[90m 1 |[39m 
+[36mimport[39m mongoose 
+[36mfrom[39m 
+[32m'mongoose'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 2 |[39m
+ [90m 3 |[39m [36mconst[39m 
+[33mMONGODB_URI[39m [33m=[39m proces
+s[33m.[39menv[33m.[39m[33mMONGODB_U
+RI[39m[33m;[39m
+ [90m 4 |[39m[0m
+
+
+
+https://nextjs.org/docs/messages/module-
+not-found
+
+
+./lib/db/connect.js:1:1
+Module not found: Can't resolve 
+'mongoose'
+[0m[31m[1m>[22m[39m[90m 1 |[39m 
+[36mimport[39m mongoose 
+[36mfrom[39m 
+[32m'mongoose'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 2 |[39m
+ [90m 3 |[39m [36mconst[39m 
+[33mMONGODB_URI[39m [33m=[39m proces
+s[33m.[39menv[33m.[39m[33mMONGODB_U
+RI[39m[33m;[39m
+ [90m 4 |[39m[0m
+
+
+
+https://nextjs.org/docs/messages/module-
+not-found
+
+
+./lib/models/Achievement.js:1:1
+Module not found: Can't resolve 
+'mongoose'
+[0m[31m[1m>[22m[39m[90m 1 |[39m 
+[36mimport[39m mongoose 
+[36mfrom[39m 
+[32m'mongoose'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 2 |[39m
+ [90m 3 |[39m [36mconst[39m 
+[33mAchievementSchema[39m [33m=[39m 
+[36mnew[39m 
+mongoose[33m.[39m[33mSchema[39m({
+ [90m 4 |[39m   userId[33m:[39m 
+{[0m
+
+
+
+https://nextjs.org/docs/messages/module-
+not-found
+
+
+./lib/models/Achievement.js:1:1
+Module not found: Can't resolve 
+'mongoose'
+[0m[31m[1m>[22m[39m[90m 1 |[39m 
+[36mimport[39m mongoose 
+[36mfrom[39m 
+[32m'mongoose'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 2 |[39m
+ [90m 3 |[39m [36mconst[39m 
+[33mAchievementSchema[39m [33m=[39m 
+[36mnew[39m 
+mongoose[33m.[39m[33mSchema[39m({
+ [90m 4 |[39m   userId[33m:[39m 
+{[0m
+
+
+
+https://nextjs.org/docs/messages/module-
+not-found
+
+
+./lib/models/GameProgress.js:1:1
+Module not found: Can't resolve 
+'mongoose'
+[0m[31m[1m>[22m[39m[90m 1 |[39m 
+[36mimport[39m mongoose 
+[36mfrom[39m 
+[32m'mongoose'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 2 |[39m
+ [90m 3 |[39m [36mconst[39m 
+[33mGameProgressSchema[39m 
+[33m=[39m [36mnew[39m 
+mongoose[33m.[39m[33mSchema[39m({
+ [90m 4 |[39m   userId[33m:[39m 
+{[0m
+
+
+
+https://nextjs.org/docs/messages/module-
+not-found
+
+
+./lib/models/GameProgress.js:1:1
+Module not found: Can't resolve 
+'mongoose'
+[0m[31m[1m>[22m[39m[90m 1 |[39m 
+[36mimport[39m mongoose 
+[36mfrom[39m 
+[32m'mongoose'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 2 |[39m
+ [90m 3 |[39m [36mconst[39m 
+[33mGameProgressSchema[39m 
+[33m=[39m [36mnew[39m 
+mongoose[33m.[39m[33mSchema[39m({
+ [90m 4 |[39m   userId[33m:[39m 
+{[0m
+
+
+
+https://nextjs.org/docs/messages/module-
+not-found
+
+
+./lib/models/Leaderboard.js:1:1
+Module not found: Can't resolve 
+'mongoose'
+[0m[31m[1m>[22m[39m[90m 1 |[39m 
+[36mimport[39m mongoose 
+[36mfrom[39m 
+[32m'mongoose'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 2 |[39m
+ [90m 3 |[39m [36mconst[39m 
+[33mLeaderboardSchema[39m [33m=[39m 
+[36mnew[39m 
+mongoose[33m.[39m[33mSchema[39m({
+ [90m 4 |[39m   userId[33m:[39m 
+{[0m
+
+
+
+https://nextjs.org/docs/messages/module-
+not-found
+
+
+./lib/models/Leaderboard.js:1:1
+Module not found: Can't resolve 
+'mongoose'
+[0m[31m[1m>[22m[39m[90m 1 |[39m 
+[36mimport[39m mongoose 
+[36mfrom[39m 
+[32m'mongoose'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m
+ [90m 2 |[39m
+ [90m 3 |[39m [36mconst[39m 
+[33mLeaderboardSchema[39m [33m=[39m 
+[36mnew[39m 
+mongoose[33m.[39m[33mSchema[39m({
+ [90m 4 |[39m   userId[33m:[39m 
+{[0m
+
+
+
+https://nextjs.org/docs/messages/module-
+not-found
+
+
+    at <unknown> 
+(./app/(auth)/login/page.jsx:16:10)
+    ... collapsed 3 duplicate lines 
+matching above 1 lines 3 times...
+    at <unknown> 
+(./lib/models/index.js:2:1)
+    at <unknown> (https://nextjs.org/doc
+s/messages/module-not-found)
+    at <unknown> 
+(./lib/db/connect.js:1:1)
+    at <unknown> (https://nextjs.org/doc
+s/messages/module-not-found)
+    at <unknown> 
+(./lib/db/connect.js:1:1)
+    at <unknown> (https://nextjs.org/doc
+s/messages/module-not-found)
+    at <unknown> 
+(./lib/models/Achievement.js:1:1)
+    at <unknown> (https://nextjs.org/doc
+s/messages/module-not-found)
+    at <unknown> 
+(./lib/models/Achievement.js:1:1)
+    at <unknown> (https://nextjs.org/doc
+s/messages/module-not-found)
+    at <unknown> 
+(./lib/models/GameProgress.js:1:1)
+    at <unknown> (https://nextjs.org/doc
+s/messages/module-not-found)
+    at <unknown> 
+(./lib/models/GameProgress.js:1:1)
+    at <unknown> (https://nextjs.org/doc
+s/messages/module-not-found)
+    at <unknown> 
+(./lib/models/Leaderboard.js:1:1)
+    at <unknown> (https://nextjs.org/doc
+s/messages/module-not-found)
+    at <unknown> 
+(./lib/models/Leaderboard.js:1:1)
+    at <unknown> (https://nextjs.org/doc
+s/messages/module-not-found)

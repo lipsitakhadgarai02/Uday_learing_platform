@@ -1,0 +1,136 @@
+﻿
+> udaya@0.1.0 build
+> next build --turbopack
+
+   Γû▓ Next.js 15.5.12 (Turbopack)
+
+   Creating an optimized production build ...
+ Γ£ô Finished writing to disk in 451ms
+ Γ£ô Compiled successfully in 32.4s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/82) ...
+node.exe : Missing Supabase environment 
+variables. Please check your .env.local 
+file.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecif 
+   ied: (Missing Supabas...env.local f  
+  ile.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCom 
+   mandError
+ 
+Missing Supabase environment variables. 
+Please check your .env.local file.
+   Generating static pages (20/82) 
+Missing Supabase environment variables. 
+Please check your .env.local file.
+Missing Supabase environment variables. 
+Please check your .env.local file.
+   Generating static pages (40/82) 
+   Generating static pages (61/82) 
+ Γ£ô Generating static pages (82/82)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                            Size  First Load JS
+Γöî Γùï /                                               3.29 kB         306 kB
+Γö£ Γùï /_not-found                                         0 B         303 kB
+Γö£ Γùï /achievements                                   3.23 kB         306 kB
+Γö£ ╞Æ /api/achievements                                   0 B            0 B
+Γö£ ╞Æ /api/games/progress                                 0 B            0 B
+Γö£ ╞Æ /api/leaderboard                                    0 B            0 B
+Γö£ Γùï /dashboard                                        464 B         303 kB
+Γö£ Γùï /games                                          5.72 kB         309 kB
+Γö£ Γùï /games/engineering/bridge-builder               9.61 kB         312 kB
+Γö£ Γùï /games/engineering/circuit-master               8.72 kB         312 kB
+Γö£ Γùï /games/engineering/city-planner                 9.92 kB         313 kB
+Γö£ Γùï /games/engineering/green-engineer               9.72 kB         313 kB
+Γö£ Γùï /games/engineering/material-tester              9.42 kB         312 kB
+Γö£ Γùï /games/engineering/robot-builder                9.52 kB         312 kB
+Γö£ Γùï /games/engineering/rocket-designer              9.09 kB         312 kB
+Γö£ Γùï /games/engineering/simple-machines              9.07 kB         312 kB
+Γö£ Γùï /games/mathematics/algebra-adventure            8.55 kB         311 kB
+Γö£ Γùï /games/mathematics/basic-arithmetic             8.53 kB         311 kB
+Γö£ Γùï /games/mathematics/fraction-pizza               9.26 kB         312 kB
+Γö£ Γùï /games/mathematics/geometry-builder             10.1 kB         313 kB
+Γö£ Γùï /games/mathematics/graph-explorer               10.4 kB         313 kB
+Γö£ Γùï /games/mathematics/number-quest                 8.11 kB         311 kB
+Γö£ Γùï /games/mathematics/pattern-master               9.11 kB         312 kB
+Γö£ Γùï /games/mathematics/probability-casino           9.63 kB         312 kB
+Γö£ Γùï /games/science/atom-builder                     8.92 kB         312 kB
+Γö£ Γùï /games/science/biology-explorer                 9.46 kB         312 kB
+Γö£ Γùï /games/science/chemistry-lab                    9.32 kB         312 kB
+Γö£ Γùï /games/science/ecosystem-manager                9.05 kB         312 kB
+Γö£ Γùï /games/science/periodic-table                   8.67 kB         311 kB
+Γö£ Γùï /games/science/solar-system                     8.94 kB         312 kB
+Γö£ Γùï /games/science/weather-wizard                   8.75 kB         312 kB
+Γö£ Γùï /games/technology/ai-trainer                    9.07 kB         312 kB
+Γö£ Γùï /games/technology/algorithm-arena               8.85 kB         312 kB
+Γö£ Γùï /games/technology/app-architect                 8.94 kB         312 kB
+Γö£ Γùï /games/technology/code-creator                  9.44 kB         312 kB
+Γö£ Γùï /games/technology/database-detective            8.89 kB         312 kB
+Γö£ Γùï /games/technology/digital-citizen               8.89 kB         312 kB
+Γö£ Γùï /games/technology/web-designer                  8.95 kB         312 kB
+Γö£ Γùï /leaderboard                                    5.53 kB         308 kB
+Γö£ Γùï /learning                                       4.57 kB         307 kB
+Γö£ Γùï /learning/class-10                              9.28 kB         312 kB
+Γö£ Γùï /learning/class-10/acids-bases-salts            6.41 kB         309 kB
+Γö£ Γùï /learning/class-10/carbon-compounds             9.43 kB         312 kB
+Γö£ Γùï /learning/class-10/chemistry                     8.6 kB         311 kB
+Γö£ Γùï /learning/class-10/coordinate-geometry          6.18 kB         309 kB
+Γö£ Γùï /learning/class-10/electricity                  9.15 kB         312 kB
+Γö£ Γùï /learning/class-10/light-reflection-refraction  6.38 kB         309 kB
+Γö£ Γùï /learning/class-10/quadratic-equations          6.17 kB         309 kB
+Γö£ Γùï /learning/class-10/real-numbers                 6.36 kB         309 kB
+Γö£ Γùï /learning/class-11                              9.53 kB         312 kB
+Γö£ Γùï /learning/class-11/complex-numbers              6.04 kB         309 kB
+Γö£ Γùï /learning/class-11/limits-derivatives           6.01 kB         309 kB
+Γö£ Γùï /learning/class-11/motion-straight-line         6.48 kB         309 kB
+Γö£ Γùï /learning/class-11/relations-functions          7.52 kB         310 kB
+Γö£ Γùï /learning/class-11/sets                         7.35 kB         310 kB
+Γö£ Γùï /learning/class-11/some-basic-concepts          6.16 kB         309 kB
+Γö£ Γùï /learning/class-11/trigonometric-functions      6.06 kB         309 kB
+Γö£ Γùï /learning/class-11/units-measurements           6.33 kB         309 kB
+Γö£ Γùï /learning/class-12                              11.9 kB         315 kB
+Γö£ Γùï /learning/class-12/integrals                    10.9 kB         314 kB
+Γö£ Γùï /learning/class-12/mathematics                  9.95 kB         313 kB
+Γö£ Γùï /learning/class-6                               6.39 kB         309 kB
+Γö£ Γùï /learning/class-6/basic-arithmetic              11.1 kB         314 kB
+Γö£ Γùï /learning/class-6/geometry-shapes               9.87 kB         313 kB
+Γö£ Γùï /learning/class-6/mathematics                   8.46 kB         311 kB
+Γö£ Γùï /learning/class-6/plant-life                    10.3 kB         313 kB
+Γö£ Γùï /learning/class-6/science                       8.61 kB         311 kB
+Γö£ Γùï /learning/class-7                               7.31 kB         310 kB
+Γö£ Γùï /learning/class-7/integers                      8.58 kB         311 kB
+Γö£ Γùï /learning/class-8                               8.15 kB         311 kB
+Γö£ Γùï /learning/class-9                               8.86 kB         312 kB
+Γö£ Γùï /learning/class-9/motion                        10.2 kB         313 kB
+Γö£ Γùï /learning/class-9/physics                       8.38 kB         311 kB
+Γö£ Γùï /loading-demo                                   2.53 kB         305 kB
+Γö£ Γùï /login                                          2.99 kB         317 kB
+Γö£ Γùï /offline                                        2.16 kB         305 kB
+Γö£ Γùï /progress                                       5.33 kB         412 kB
+Γö£ Γùï /signup                                         3.17 kB         318 kB
+Γö£ Γùï /student                                        4.54 kB         307 kB
+Γöö Γùï /teacher                                        14.1 kB         420 kB
++ First Load JS shared by all                        334 kB
+  Γö£ chunks/2fff395fbc8f3998.js                      26.6 kB
+  Γö£ chunks/3a1498921683325f.js                      17.2 kB
+  Γö£ chunks/3e6caa6cd106dbeb.js                      51.9 kB
+  Γö£ chunks/4eb10a562b2e5b86.js                      42.5 kB
+  Γö£ chunks/68e9525029e47701.js                      17.4 kB
+  Γö£ chunks/6d63e10938988fb2.js                      13.2 kB
+  Γöö chunks/affcb2a11c5fa993.js                      59.2 kB
+  Γö£ chunks/fcd5eecac565a3ce.js                      33.9 kB
+  Γö£ chunks/2869cacd8a5d33b4.css                     29.8 kB
+  Γöö other shared chunks (total)                     42.3 kB
+
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+
