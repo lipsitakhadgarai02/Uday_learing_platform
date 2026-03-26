@@ -1,6 +1,6 @@
 # UDAYA
 
-<img width="1918" height="972" alt="UDAYA App Preview" src="/banner.png" />
+<img width="1918" height="972" alt="UDAYA App Preview" src="./public/banner.png" />
 
 ---
 
