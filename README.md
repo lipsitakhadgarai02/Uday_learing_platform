@@ -1,6 +1,6 @@
 # UDAYA
 
-<img width="1918" height="972" alt="image" src="https://github.com/user-attachments/assets/d8f409d8-bb44-4724-a00e-1e9ecc0ee302" />
+<img width="1918" height="972" alt="UDAYA App Preview" src="/banner.png" />
 
 ---
 
