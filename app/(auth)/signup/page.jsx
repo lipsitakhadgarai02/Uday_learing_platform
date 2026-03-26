@@ -12,7 +12,6 @@ import { Eye, EyeOff, Shield, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { createProfile } from '@/lib/services/supabaseService';
 import { toast } from 'react-hot-toast';
 import { FaBookOpen as BookOpen } from 'react-icons/fa';
 import Link from 'next/link';
@@ -150,21 +149,6 @@ export default function SignupPage() {
       });
 
       if (error) throw error;
-
-      if (data?.user) {
-        try {
-          await createProfile(data.user.id, {
-            email: formData.email,
-            name: formData.name,
-            role: formData.role,
-            grade: formData.grade || null,
-            school: formData.school
-          });
-        } catch (profileError) {
-          console.error("Failed to create profile record:", profileError);
-          // Normally we might rollback or retry, but let's proceed
-        }
-      }
 
       toast.success(`Account created successfully! Welcome ${formData.name}`);
 

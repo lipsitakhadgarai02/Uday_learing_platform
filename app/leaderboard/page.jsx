@@ -40,21 +40,27 @@ export default function LeaderboardPage() {
       .order("score", { ascending: false });
 
     if (error) {
-      console.error("Error fetching leaderboard:", error);
+      console.error("Error fetching leaderboard:", {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
+      setIsLoading(false);
       return;
     }
 
     // Format data for UI
-    const formatted = data.map((entry, index) => ({
+    const formatted = data?.map((entry, index) => ({
       id: index,
       rank: index + 1,
       name: entry.profiles?.name || "Anonymous Learner",
       school: entry.profiles?.school || "Unknown School",
       points: entry.score,
       level: Math.floor(entry.score / 1000) + 1,
-      achievements: 0, // Simplified for now as it's not in the base leaderboard table
-      streak: 0, // Simplified for now
-    }));
+      achievements: 0, 
+      streak: 0,
+    })) || [];
 
     setLeaders(formatted);
     setIsLoading(false);
