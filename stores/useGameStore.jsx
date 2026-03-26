@@ -186,13 +186,37 @@ export const useGameStore = create(
         // Now handled by subscription and fetch methods triggered on auth change
       },
 
-      updateGameProgress: (gameId, progressData) => {
+      updateGameProgress: async (gameId, scoreOrData, questionsAttempted, totalQuestions) => {
+        let score = 0;
+        let isCompleted = false;
+
+        // Support both (gameId, {score, completed, ...}) and (gameId, score, attempted, total) signatures
+        if (typeof scoreOrData === 'object' && scoreOrData !== null) {
+          score = scoreOrData.score || 0;
+          isCompleted = scoreOrData.completed || false;
+        } else {
+          score = typeof scoreOrData === 'number' ? scoreOrData : 0;
+          isCompleted = questionsAttempted !== undefined && totalQuestions !== undefined && questionsAttempted >= totalQuestions;
+        }
+
         const currentProgress = get().gameProgress;
         const updatedProgress = {
           ...currentProgress,
-          [gameId]: progressData,
+          [gameId]: typeof scoreOrData === 'object' ? scoreOrData : {
+            score,
+            completed: isCompleted,
+            progress: totalQuestions ? (questionsAttempted / totalQuestions) * 100 : 0,
+            lastPlayed: new Date().toISOString()
+          },
         };
+        
         set({ gameProgress: updatedProgress });
+
+        // If the game is completed and has a score, sync it to Supabase
+        if (isCompleted && score > 0) {
+          console.log(`Syncing score for ${gameId}: ${score} points`);
+          await get().addPoints(score);
+        }
       },
 
       getGameProgress: (gameId) => {
