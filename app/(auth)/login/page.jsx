@@ -8,6 +8,7 @@ import { ButtonLoader } from '@/components/ui/loader';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useLoading } from '@/contexts/LoadingContext';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useGameStore } from '@/stores/useGameStore';
 import { Eye, EyeOff, Shield, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -26,7 +27,8 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const { login } = useAuthStore();
+  const { login, continueAsGuest } = useAuthStore();
+  const { syncLocalDataToSupabase } = useGameStore();
   const { startLoading, stopLoading } = useLoading();
   const router = useRouter();
 
@@ -104,31 +106,40 @@ export default function LoginPage() {
 
         if (error) throw error;
 
-        toast.success(`Welcome back!`);
-
-        const role = data.user?.user_metadata?.role || formData.role;
-        switch (role) {
-          case 'admin':
-            startLoading('Redirecting to Admin Dashboard...', 'default');
-            router.push('/admin');
-            break;
-          case 'teacher':
-            startLoading('Redirecting to Teacher Dashboard...', 'default');
-            router.push('/teacher');
-            break;
-          default:
-            startLoading('Redirecting to Student Dashboard...', 'default');
-            router.push('/student');
+        // Sync local guest data to Supabase after successful login
+        if (data?.user) {
+          await syncLocalDataToSupabase(data.user.id);
         }
+
+        toast.success(`Welcome back!`);
+        
+        // Ensure we stop any login-specific loading before letting the AuthContext take over
+        stopLoading();
+        router.push('/student');
       } else {
         toast.error('Please fill in all fields');
+        stopLoading();
       }
     } catch (error) {
-      toast.error(error.message || 'Login failed. Please try again.');
+      console.error("DEBUG: Login Error:", error);
+      const msg = error.message || 'Login failed';
+      if (msg.toLowerCase().includes('email')) {
+        toast.error(`${msg}. Make sure you have signed up and verified your email.`);
+      } else {
+        toast.error(msg);
+      }
       stopLoading();
     } finally {
       setIsLoading(false);
     }
+
+
+  };
+
+  const handleGuestLogin = () => {
+    continueAsGuest();
+    toast.success('Continuing as Guest. Your progress will be saved locally!');
+    router.push('/student');
   };
 
   const handleDemoLogin = async (role) => {
@@ -242,38 +253,6 @@ export default function LoginPage() {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="role">Login as</Label>
-                <Select value={formData.role} onValueChange={handleRoleChange}>
-                  <SelectTrigger className={errors.role ? 'border-red-500 focus:border-red-500' : ''}>
-                    <SelectValue placeholder="Select your role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="student">
-                      <div className="flex items-center">
-                        <BookOpen className="h-4 w-4 mr-2" />
-                        Student
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="teacher">
-                      <div className="flex items-center">
-                        <Users className="h-4 w-4 mr-2" />
-                        Teacher
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="admin">
-                      <div className="flex items-center">
-                        <Shield className="h-4 w-4 mr-2" />
-                        Admin
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.role && (
-                  <p className="text-sm text-red-500 mt-1">{errors.role}</p>
-                )}
-              </div>
-
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <div className="flex items-center gap-2">
@@ -284,43 +263,45 @@ export default function LoginPage() {
                   'Sign In'
                 )}
               </Button>
+
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-muted"></div>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">Or</span>
+                </div>
+              </div>
+
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full border-primary/50 hover:bg-primary/5" 
+                onClick={handleGuestLogin}
+                disabled={isLoading}
+              >
+                Play as Guest
+              </Button>
             </form>
 
-            {/* Demo Login Buttons */}
+            {/* Demo Login Button */}
             <div className="mt-6 pt-6 border-t">
               <p className="text-sm text-muted-foreground text-center mb-3">
                 Quick Demo Access
               </p>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="flex justify-center">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handleDemoLogin('student')}
-                  className="text-xs"
+                  className="text-xs w-full max-w-xs"
                 >
                   <BookOpen className="h-3 w-3 mr-1" />
-                  Student
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDemoLogin('teacher')}
-                  className="text-xs"
-                >
-                  <Users className="h-3 w-3 mr-1" />
-                  Teacher
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDemoLogin('admin')}
-                  className="text-xs"
-                >
-                  <Shield className="h-3 w-3 mr-1" />
-                  Admin
+                  Try as Demo Student
                 </Button>
               </div>
             </div>
+
 
             <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">Don&apos;t have an account? </span>

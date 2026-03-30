@@ -34,21 +34,29 @@ export default function StudentDashboard() {
   const { t } = useTranslation();
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
-  const { totalPoints, level, streak, achievements } = useGameStore();
+  const { totalPoints, level, streak, userProgress, gameProgress, weeklyGoal, getGamesPlayedThisWeek } = useGameStore();
+  const achievements = userProgress?.badges || [];
+  const gamesPlayedThisWeek = getGamesPlayedThisWeek ? getGamesPlayedThisWeek() : 0;
 
-  const [currentStreak, setCurrentStreak] = useState(0);
-  const [weeklyGoal, setWeeklyGoal] = useState(5); // 5 games per week
-  const [gamesPlayedThisWeek, setGamesPlayedThisWeek] = useState(2);
+  const calculateSubjectProgress = (subjectId) => {
+    // Define which games belong to which subject (matching GamesPage.jsx)
+    const subjectGames = {
+      mathematics: ['number-quest', 'algebra-adventure', 'fraction-pizza', 'geometry-builder', 'basic-arithmetic', 'pattern-master', 'graph-explorer', 'probability-casino'],
+      science: ['chemistry-lab', 'biology-explorer', 'solar-system', 'atom-builder', 'ecosystem-manager', 'weather-wizard', 'periodic-table'],
+      technology: ['code-creator', 'digital-citizen', 'app-architect', 'algorithm-arena', 'web-designer', 'database-detective', 'ai-trainer'],
+      engineering: ['bridge-builder', 'simple-machines', 'circuit-master', 'green-engineer', 'rocket-designer', 'city-planner', 'robot-builder', 'material-tester']
+    };
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-      return;
-    }
+    const games = subjectGames[subjectId] || [];
+    const completedCount = games.filter(id => gameProgress[id]?.completed).length;
+    const progress = games.length > 0 ? Math.round((completedCount / games.length) * 100) : 0;
 
-    // Simulate loading user data
-    setCurrentStreak(streak);
-  }, [isAuthenticated, streak, router]);
+    return {
+      completed: completedCount,
+      total: games.length,
+      percent: progress
+    };
+  };
 
   const subjects = [
     {
@@ -57,9 +65,7 @@ export default function StudentDashboard() {
       description: t('subjects.mathematics.description'),
       icon: <Calculator className="h-6 w-6" />,
       color: 'bg-blue-500',
-      progress: 65,
-      completedGames: 8,
-      totalGames: 12
+      ...calculateSubjectProgress('mathematics')
     },
     {
       id: 'science',
@@ -67,9 +73,7 @@ export default function StudentDashboard() {
       description: t('subjects.science.description'),
       icon: <FlaskConical className="h-6 w-6" />,
       color: 'bg-green-500',
-      progress: 40,
-      completedGames: 5,
-      totalGames: 12
+      ...calculateSubjectProgress('science')
     },
     {
       id: 'technology',
@@ -77,9 +81,7 @@ export default function StudentDashboard() {
       description: t('subjects.technology.description'),
       icon: <Laptop className="h-6 w-6" />,
       color: 'bg-purple-500',
-      progress: 20,
-      completedGames: 2,
-      totalGames: 10
+      ...calculateSubjectProgress('technology')
     },
     {
       id: 'engineering',
@@ -87,38 +89,24 @@ export default function StudentDashboard() {
       description: t('subjects.engineering.description'),
       icon: <Hammer className="h-6 w-6" />,
       color: 'bg-orange-500',
-      progress: 30,
-      completedGames: 3,
-      totalGames: 10
+      ...calculateSubjectProgress('engineering')
     }
   ];
 
-  const recentAchievements = [
-    {
-      id: 'first_game',
-      name: 'First Steps',
-      description: 'Completed your first game!',
-      icon: '🎯',
-      dateEarned: '2024-01-15',
-      points: 50
-    },
-    {
-      id: 'math_master',
-      name: 'Math Master',
-      description: 'Completed 5 math games',
-      icon: '🔢',
-      dateEarned: '2024-01-16',
-      points: 100
-    },
-    {
-      id: 'streak_3',
-      name: '3-Day Streak',
-      description: 'Played for 3 consecutive days',
-      icon: '🔥',
-      dateEarned: '2024-01-17',
-      points: 75
-    }
-  ];
+  // Achievement definitions to map store strings to UI elements
+  const achievementMap = {
+    'First Milestone': { name: 'First Milestone', description: 'Earned your first 100 points!', icon: '🎯', points: 100 },
+    'STEM Explorer': { name: 'STEM Explorer', description: 'Reached 500 total points!', icon: '🚀', points: 250 },
+    'Weekly Warrior': { name: 'Weekly Warrior', description: 'Maintained a 7-day streak!', icon: '🔥', points: 500 },
+    'STEM Pro': { name: 'STEM Pro', description: 'Reached 1000 total points!', icon: '💎', points: 1000 },
+  };
+
+  const recentAchievements = achievements.map(badge => achievementMap[badge] || { 
+    name: badge, 
+    description: 'Achievement unlocked!', 
+    icon: '🏆', 
+    points: 50 
+  });
 
   const upcomingEvents = [
     {
@@ -139,7 +127,7 @@ export default function StudentDashboard() {
     }
   ];
 
-  const weeklyProgress = Math.round((gamesPlayedThisWeek / weeklyGoal) * 100);
+  const weeklyProgress = weeklyGoal > 0 ? Math.round((gamesPlayedThisWeek / weeklyGoal) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -147,7 +135,7 @@ export default function StudentDashboard() {
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            {t('dashboard.welcome')}, {user?.fullName || 'Student'}! 👋
+            {t('dashboard.welcome')}, {user?.name || user?.fullName || 'Student'}! 👋
           </h1>
           <p className="text-muted-foreground">
             Ready to continue your learning adventure?
@@ -191,7 +179,7 @@ export default function StudentDashboard() {
                   <p className="text-xs lg:text-sm font-medium text-muted-foreground truncate">
                     {t('dashboard.streak')}
                   </p>
-                  <p className="text-lg lg:text-2xl font-bold">{currentStreak} <span className="text-sm font-normal">days</span></p>
+                  <p className="text-lg lg:text-2xl font-bold">{streak} <span className="text-sm font-normal">days</span></p>
                 </div>
                 <Flame className="h-6 w-6 lg:h-8 lg:w-8 text-orange-500 flex-shrink-0" />
               </div>
@@ -264,12 +252,12 @@ export default function StudentDashboard() {
                         <div>
                           <h3 className="font-medium">{subject.name}</h3>
                           <p className="text-sm text-muted-foreground">
-                            {subject.completedGames}/{subject.totalGames} games completed
+                            {subject.completed}/{subject.total} games completed
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium">{subject.progress}%</p>
+                        <p className="text-sm font-medium">{subject.percent}%</p>
                         <Button variant="ghost" size="sm" asChild>
                           <Link href={`/games/${subject.id}`}>
                             <ChevronRight className="h-4 w-4" />
@@ -277,7 +265,7 @@ export default function StudentDashboard() {
                         </Button>
                       </div>
                     </div>
-                    <Progress value={subject.progress} className="h-2" />
+                    <Progress value={subject.percent} className="h-2" />
                   </div>
                 ))}
               </CardContent>

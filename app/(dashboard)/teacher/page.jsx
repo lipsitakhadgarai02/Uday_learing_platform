@@ -21,7 +21,8 @@ import {
   LineChart,
   Download,
   Filter,
-  Bell
+  Bell,
+  Calendar as CalendarIcon
 } from 'lucide-react';
 import { 
   LineChart as RechartsLineChart, 
@@ -37,14 +38,77 @@ import {
   Cell,
   Pie
 } from 'recharts';
+import { getTeacherClassStats, getRecentStudentActivity, getAssignments, createAssignment } from '@/lib/services/teacherService';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { toast } from 'react-hot-toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select as UISelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function TeacherDashboard() {
   const { t } = useTranslation();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, isInitializing } = useAuthStore();
   const router = useRouter();
 
+  const [classStats, setClassStats] = useState({
+    totalStudents: 0,
+    activeThisWeek: 0,
+    averageProgress: 0,
+    assignmentsCompleted: 0
+  });
+
+  const [recentStudents, setRecentStudents] = useState([]);
+  const [assignments, setAssignments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  
+  // New Assignment Form State
+  const [newAssignment, setNewAssignment] = useState({
+    title: '',
+    description: '',
+    subject: '',
+    due_date: '',
+    points_reward: 50
+  });
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const [stats, activity, assignmentList] = await Promise.all([
+        getTeacherClassStats(),
+        getRecentStudentActivity(),
+        getAssignments()
+      ]);
+      setClassStats(stats);
+      setRecentStudents(activity);
+      setAssignments(assignmentList);
+    } catch (error) {
+      console.error("Error fetching teacher data:", error);
+      toast.error("Failed to load dashboard data");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
+    if (isInitializing) return;
+
     if (!isAuthenticated) {
       router.push('/login');
       return;
@@ -54,14 +118,36 @@ export default function TeacherDashboard() {
       router.push('/student');
       return;
     }
-  }, [isAuthenticated, user, router]);
 
-  // Mock data for teacher dashboard
-  const classStats = {
-    totalStudents: 28,
-    activeThisWeek: 22,
-    averageProgress: 68,
-    assignmentsCompleted: 85
+    fetchData();
+  }, [isInitializing, isAuthenticated, user, router]);
+
+
+  const handleCreateAssignment = async (e) => {
+    e.preventDefault();
+    if (!newAssignment.title) {
+        toast.error("Title is required");
+        return;
+    }
+
+    try {
+        await createAssignment({
+            ...newAssignment,
+            teacher_id: user.id
+        });
+        toast.success("Assignment created!");
+        setIsCreateModalOpen(false);
+        setNewAssignment({
+            title: '',
+            description: '',
+            subject: '',
+            due_date: '',
+            points_reward: 50
+        });
+        fetchData(); // Refresh list
+    } catch (error) {
+        toast.error("Failed to create assignment");
+    }
   };
 
   const studentProgress = [
@@ -77,45 +163,6 @@ export default function TeacherDashboard() {
     { name: 'Science', value: 28, color: '#10B981' },
     { name: 'Technology', value: 22, color: '#8B5CF6' },
     { name: 'Engineering', value: 15, color: '#F59E0B' }
-  ];
-
-  const recentStudents = [
-    {
-      id: 1,
-      name: 'Arjun Patel',
-      lastActive: '2 hours ago',
-      progress: 85,
-      currentLevel: 15,
-      gamesCompleted: 24,
-      status: 'active'
-    },
-    {
-      id: 2,
-      name: 'Sneha Sharma',
-      lastActive: '1 day ago',
-      progress: 72,
-      currentLevel: 12,
-      gamesCompleted: 18,
-      status: 'inactive'
-    },
-    {
-      id: 3,
-      name: 'Rohit Das',
-      lastActive: '3 hours ago',
-      progress: 91,
-      currentLevel: 18,
-      gamesCompleted: 32,
-      status: 'active'
-    },
-    {
-      id: 4,
-      name: 'Kavya Singh',
-      lastActive: '5 hours ago',
-      progress: 67,
-      currentLevel: 11,
-      gamesCompleted: 15,
-      status: 'struggling'
-    }
   ];
 
   const upcomingAssignments = [
@@ -138,7 +185,7 @@ export default function TeacherDashboard() {
     {
       id: 3,
       title: 'Technology Project - Basic Programming',
-      dueDate: '2024-01-30',
+      dueDate: '2024-01-20',
       studentsAssigned: 28,
       submitted: 3,
       subject: 'Technology'
@@ -171,13 +218,21 @@ export default function TeacherDashboard() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            {t('teacher.dashboard')}, {user?.fullName || 'Teacher'}! 👋
+            {t('teacher.dashboard')}, {user?.name || user?.fullName || 'Teacher'}! 👋
           </h1>
           <p className="text-muted-foreground">
             Monitor your students' progress and manage your class effectively
@@ -227,7 +282,7 @@ export default function TeacherDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Assignments Done</p>
-                  <p className="text-2xl font-bold">{classStats.assignmentsCompleted}%</p>
+                  <p className="text-2xl font-bold">{classStats.assignmentsCompleted}</p>
                 </div>
                 <Award className="h-8 w-8 text-orange-500" />
               </div>
@@ -433,37 +488,110 @@ export default function TeacherDashboard() {
                       Create and track student assignments
                     </CardDescription>
                   </div>
-                  <Button>
-                    <PlusCircle className="h-4 w-4 mr-2" />
-                    Create Assignment
-                  </Button>
+                  <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+                    <DialogTrigger asChild>
+                      <Button>
+                        <PlusCircle className="h-4 w-4 mr-2" />
+                        Create Assignment
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Create New Assignment</DialogTitle>
+                        <DialogDescription>
+                          Assign a new task to all students in your class.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <form onSubmit={handleCreateAssignment}>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid gap-2">
+                            <Label htmlFor="title">Title</Label>
+                            <Input 
+                                id="title" 
+                                value={newAssignment.title} 
+                                onChange={(e) => setNewAssignment({...newAssignment, title: e.target.value})} 
+                                placeholder="Mathematics Quiz..." 
+                                required
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="subject">Subject</Label>
+                            <UISelect 
+                                value={newAssignment.subject} 
+                                onValueChange={(v) => setNewAssignment({...newAssignment, subject: v})}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select subject" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Mathematics">Mathematics</SelectItem>
+                                    <SelectItem value="Science">Science</SelectItem>
+                                    <SelectItem value="Technology">Technology</SelectItem>
+                                    <SelectItem value="Engineering">Engineering</SelectItem>
+                                </SelectContent>
+                            </UISelect>
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="description">Description</Label>
+                            <Textarea 
+                                id="description" 
+                                value={newAssignment.description} 
+                                onChange={(e) => setNewAssignment({...newAssignment, description: e.target.value})} 
+                                placeholder="Describe the task..." 
+                            />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                              <Label htmlFor="due_date">Due Date</Label>
+                              <Input 
+                                id="due_date" 
+                                type="date" 
+                                value={newAssignment.due_date} 
+                                onChange={(e) => setNewAssignment({...newAssignment, due_date: e.target.value})} 
+                              />
+                            </div>
+                            <div className="grid gap-2">
+                              <Label htmlFor="points">Points Reward</Label>
+                              <Input 
+                                id="points" 
+                                type="number" 
+                                value={newAssignment.points_reward} 
+                                onChange={(e) => setNewAssignment({...newAssignment, points_reward: parseInt(e.target.value)})} 
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button type="submit">Create Assignment</Button>
+                        </DialogFooter>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {upcomingAssignments.map((assignment) => (
+                  {assignments.length > 0 ? assignments.map((assignment) => (
                     <div key={assignment.id} className="p-4 border rounded-lg">
                       <div className="flex items-center justify-between mb-3">
                         <div>
                           <h3 className="font-semibold">{assignment.title}</h3>
                           <p className="text-sm text-muted-foreground">
-                            Due: {assignment.dueDate} • Subject: {assignment.subject}
+                            Due: {assignment.due_date || 'No date'} • Subject: {assignment.subject || 'STEM'}
                           </p>
                         </div>
                         <Badge variant="outline">
-                          {assignment.submitted}/{assignment.studentsAssigned} submitted
+                          0/{classStats.totalStudents} submitted
                         </Badge>
                       </div>
                       
                       <div className="space-y-2 mb-3">
                         <div className="flex justify-between text-sm">
                           <span>Submission Progress</span>
-                          <span>
-                            {Math.round((assignment.submitted / assignment.studentsAssigned) * 100)}%
-                          </span>
+                          <span>0%</span>
                         </div>
                         <Progress 
-                          value={(assignment.submitted / assignment.studentsAssigned) * 100} 
+                          value={0} 
                           className="h-2" 
                         />
                       </div>
@@ -475,12 +603,17 @@ export default function TeacherDashboard() {
                         <Button variant="outline" size="sm">
                           Send Reminder
                         </Button>
-                        <Button variant="outline" size="sm">
-                          Edit Assignment
+                        <Button variant="outline" size="sm" className="text-red-600 border-red-200">
+                          Delete
                         </Button>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="text-center py-12 border rounded-lg border-dashed">
+                      <p className="text-muted-foreground mb-4">No assignments created yet</p>
+                      <Button variant="outline">Create your first assignment</Button>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

@@ -8,6 +8,7 @@ import { ButtonLoader } from '@/components/ui/loader';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useLoading } from '@/contexts/LoadingContext';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useGameStore } from '@/stores/useGameStore';
 import { Eye, EyeOff, Shield, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -32,6 +33,7 @@ export default function SignupPage() {
   const [errors, setErrors] = useState({});
 
   const { login } = useAuthStore();
+  const { syncLocalDataToSupabase } = useGameStore();
   const { startLoading, stopLoading } = useLoading();
   const router = useRouter();
 
@@ -62,13 +64,14 @@ export default function SignupPage() {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
-    if (formData.role === 'student' && !formData.grade) {
+    if (!formData.grade) {
       newErrors.grade = 'Please select your grade';
     }
 
-    if (!formData.school.trim()) {
-      newErrors.school = 'School name is required';
-    }
+
+    // School is optional, so we don't return an error if it's empty
+    // But we keep the field in the form for profile completeness
+
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -90,12 +93,7 @@ export default function SignupPage() {
     }
   };
 
-  const handleRoleChange = (value) => {
-    setFormData(prev => ({
-      ...prev,
-      role: value
-    }));
-  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -150,29 +148,27 @@ export default function SignupPage() {
 
       if (error) throw error;
 
+      // Sync local guest data to Supabase after successful signup
+      if (data?.user) {
+        await syncLocalDataToSupabase(data.user.id);
+      }
+
       toast.success(`Account created successfully! Welcome ${formData.name}`);
 
-      // Redirect based on role with loading message
-      switch (formData.role) {
-        case 'admin':
-          startLoading('Setting up Admin Dashboard...', 'default');
-          router.push('/admin');
-          break;
-        case 'teacher':
-          startLoading('Setting up Teacher Dashboard...', 'default');
-          router.push('/teacher');
-          break;
-        default:
-          startLoading('Setting up Student Dashboard...', 'default');
-          router.push('/student');
-      }
+      startLoading('Setting up Student Dashboard...', 'default');
+      router.push('/student');
+
     } catch (error) {
+      console.error("DEBUG: Signup Error:", error);
       toast.error(error.message || 'Registration failed. Please try again.');
       stopLoading();
     } finally {
       setIsLoading(false);
+      // Extra safety to clear global loading
+      setTimeout(() => stopLoading(), 1000);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 flex items-center justify-center p-4 rural-pattern">
@@ -280,51 +276,23 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="role">I am a *</Label>
-                <Select value={formData.role} onValueChange={handleRoleChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your role" />
+                <Label htmlFor="grade">Grade *</Label>
+                <Select value={formData.grade} onValueChange={(value) => setFormData(prev => ({ ...prev, grade: value }))}>
+                  <SelectTrigger id="grade">
+                    <SelectValue placeholder="Select your grade" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="student">
-                      <div className="flex items-center">
-                        <BookOpen className="h-4 w-4 mr-2" />
-                        Student
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="teacher">
-                      <div className="flex items-center">
-                        <Users className="h-4 w-4 mr-2" />
-                        Teacher
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="admin">
-                      <div className="flex items-center">
-                        <Shield className="h-4 w-4 mr-2" />
-                        Admin
-                      </div>
-                    </SelectItem>
+                    {Array.from({ length: 7 }, (_, i) => (
+                      <SelectItem key={i + 6} value={`${i + 6}`}>
+                        Grade {i + 6}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
+
+
                 </Select>
               </div>
 
-              {formData.role === 'student' && (
-                <div className="space-y-2">
-                  <Label htmlFor="grade">Grade/Class</Label>
-                  <Select value={formData.grade} onValueChange={(value) => setFormData(prev => ({ ...prev, grade: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your grade" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 7 }, (_, i) => (
-                        <SelectItem key={i + 6} value={`${i + 6}`}>
-                          Grade {i + 6}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
 
               <div className="space-y-2">
                 <Label htmlFor="school">School/Institution</Label>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,8 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useGameStore } from '@/stores/useGameStore';
+import { supabase } from '@/lib/supabase';
+
 import {
   LineChart,
   Line,
@@ -39,90 +41,86 @@ import {
 export default function ProgressPage() {
   const { t } = useTranslation();
   const { user } = useAuthStore();
-  const { totalPoints, level, streak } = useGameStore();
-  
+  const { totalPoints, level, streak, userProgress, gameProgress, recentScores, fetchRecentScores, subscribeToLeaderboard } = useGameStore();
   const [selectedPeriod, setSelectedPeriod] = useState('week');
 
-  // Mock progress data
-  const weeklyProgress = [
-    { name: 'Mon', points: 45, games: 2 },
-    { name: 'Tue', points: 78, games: 3 },
-    { name: 'Wed', points: 32, games: 1 },
-    { name: 'Thu', points: 95, games: 4 },
-    { name: 'Fri', points: 123, games: 5 },
-    { name: 'Sat', points: 87, games: 3 },
-    { name: 'Sun', points: 65, games: 2 }
-  ];
+  // Real-time initialization
+  useEffect(() => {
+    if (user?.id) {
+      fetchRecentScores(user.id);
+      const channel = subscribeToLeaderboard(user.id);
+      return () => {
+        if (channel) supabase.removeChannel(channel);
+      };
+    }
+  }, [user?.id, fetchRecentScores, subscribeToLeaderboard]);
 
-  const monthlyProgress = [
-    { name: 'Week 1', points: 245, games: 12 },
-    { name: 'Week 2', points: 398, games: 18 },
-    { name: 'Week 3', points: 456, games: 22 },
-    { name: 'Week 4', points: 523, games: 25 }
-  ];
+  // Format chart data from real scores
+  const getChartData = () => {
+    if (!recentScores || recentScores.length === 0) return [];
+    
+    return recentScores.map(score => ({
+      name: new Date(score.created_at).toLocaleDateString([], { weekday: 'short' }),
+      points: score.score,
+      fullDate: new Date(score.created_at).toLocaleDateString()
+    }));
+  };
+
+  const chartData = getChartData();
+
+  // Real Subject Progress Calculation
+  const calculateSubjectProgress = (subjectId) => {
+    const subjectGames = {
+      mathematics: ['number-quest', 'algebra-adventure', 'fraction-pizza', 'geometry-builder', 'basic-arithmetic', 'pattern-master', 'graph-explorer', 'probability-casino'],
+      science: ['chemistry-lab', 'biology-explorer', 'solar-system', 'atom-builder', 'ecosystem-manager', 'weather-wizard', 'periodic-table'],
+      technology: ['code-creator', 'digital-citizen', 'app-architect', 'algorithm-arena', 'web-designer', 'database-detective', 'ai-trainer'],
+      engineering: ['bridge-builder', 'simple-machines', 'circuit-master', 'green-engineer', 'rocket-designer', 'city-planner', 'robot-builder', 'material-tester']
+    };
+
+    const games = subjectGames[subjectId] || [];
+    const completedCount = games.filter(id => gameProgress[id]?.completed).length;
+    const progress = games.length > 0 ? Math.round((completedCount / games.length) * 100) : 0;
+
+    return {
+      completed: completedCount,
+      total: games.length,
+      percent: progress
+    };
+  };
 
   const subjectProgress = [
-    { name: 'Mathematics', value: 65, color: '#3B82F6', completed: 8, total: 12 },
-    { name: 'Science', value: 45, color: '#10B981', completed: 5, total: 11 },
-    { name: 'Technology', value: 30, color: '#8B5CF6', completed: 3, total: 10 },
-    { name: 'Engineering', value: 25, color: '#F59E0B', completed: 2, total: 8 }
+    { name: 'Mathematics', ...calculateSubjectProgress('mathematics'), color: '#3B82F6' },
+    { name: 'Science', ...calculateSubjectProgress('science'), color: '#10B981' },
+    { name: 'Technology', ...calculateSubjectProgress('technology'), color: '#8B5CF6' },
+    { name: 'Engineering', ...calculateSubjectProgress('engineering'), color: '#F59E0B' }
   ];
 
+  // Derive recent activity from recent scores and achievements
   const recentActivity = [
-    {
-      id: 1,
+    ...(recentScores?.slice(-3).map((s, i) => ({
+      id: `score-${i}`,
       type: 'game_completed',
-      title: 'Number Quest',
-      subject: 'Mathematics',
-      points: 85,
-      time: '2 hours ago',
-      icon: Calculator
-    },
-    {
-      id: 2,
+      title: 'Game Completed',
+      subject: 'STEM Challenge',
+      points: s.score,
+      time: new Date(s.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      icon: Trophy
+    })) || []),
+    ...(userProgress.badges?.slice(-2).map((b, i) => ({
+      id: `badge-${i}`,
       type: 'achievement_unlocked',
-      title: 'Math Master',
+      title: b,
       subject: 'Achievement',
       points: 100,
-      time: '1 day ago',
-      icon: Trophy
-    },
-    {
-      id: 3,
-      type: 'game_completed',
-      title: 'Chemistry Lab',
-      subject: 'Science',
-      points: 92,
-      time: '2 days ago',
-      icon: FlaskConical
-    },
-    {
-      id: 4,
-      type: 'level_up',
-      title: 'Level 5 Reached',
-      subject: 'Progress',
-      points: 150,
-      time: '3 days ago',
+      time: 'Recently',
       icon: Star
-    }
-  ];
-
-  const getActivityIcon = (type) => {
-    switch (type) {
-      case 'game_completed':
-        return Trophy;
-      case 'achievement_unlocked':
-        return Star;
-      case 'level_up':
-        return TrendingUp;
-      default:
-        return BookOpen;
-    }
-  };
+    })) || [])
+  ].sort((a, b) => b.id.localeCompare(a.id));
 
   const totalGamesCompleted = subjectProgress.reduce((sum, subject) => sum + subject.completed, 0);
   const totalGames = subjectProgress.reduce((sum, subject) => sum + subject.total, 0);
   const overallProgress = Math.round((totalGamesCompleted / totalGames) * 100);
+
 
   return (
     <div className="min-h-screen bg-background">      
@@ -213,7 +211,7 @@ export default function ProgressPage() {
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={selectedPeriod === 'week' ? weeklyProgress : monthlyProgress}>
+                <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -240,12 +238,13 @@ export default function ProgressPage() {
                         {subject.completed}/{subject.total} games
                       </span>
                     </div>
-                    <Progress value={subject.value} className="h-2" />
+                    <Progress value={subject.percent} className="h-2" />
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
+
         </div>
 
         {/* Recent Activity */}

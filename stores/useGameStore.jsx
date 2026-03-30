@@ -24,41 +24,32 @@ export const useGameStore = create(
 
       gameScores: {},
       gameProgress: {},
+      weeklyGoal: 5,
       leaderboard: [],
       currentModule: null,
       ecoMode: false,
+      recentScores: [],
+
+
+      // --- GETTERS ---
+      getGamesPlayedThisWeek: () => {
+        const gameProgress = get().gameProgress;
+        const now = new Date();
+        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        return Object.values(gameProgress).filter(game => {
+          if (!game.lastPlayed) return false;
+          const lastPlayed = new Date(game.lastPlayed);
+          return lastPlayed >= startOfWeek;
+        }).length;
+      },
 
       // --- SUPABASE REAL-TIME SYNC ---
 
-      fetchUserProfile: async (userId) => {
-        if (!userId) return;
+      // --- SUPABASE REAL-TIME SYNC ---
 
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("total_points, level, streak")
-          .eq("id", userId)
-          .single();
 
-        if (error) {
-          console.error("Error fetching user profile:", error);
-          return;
-        }
-
-        if (data) {
-          const currentProgress = get().userProgress;
-          set({
-            totalPoints: data.total_points || 0,
-            level: data.level || 1,
-            streak: data.streak || 0,
-            userProgress: {
-              ...currentProgress,
-              totalPoints: data.total_points || 0,
-              level: data.level || 1,
-              streakDays: data.streak || 0,
-            },
-          });
-        }
-      },
 
       subscribeToProfile: (userId) => {
         if (!userId) return null;
@@ -76,6 +67,7 @@ export const useGameStore = create(
             (payload) => {
               const currentProgress = get().userProgress;
               const newData = payload.new;
+
               set({
                 totalPoints: newData.total_points || 0,
                 level: newData.level || 1,
@@ -85,14 +77,53 @@ export const useGameStore = create(
                   totalPoints: newData.total_points || 0,
                   level: newData.level || 1,
                   streakDays: newData.streak || 0,
+                  badges: newData.badges || currentProgress.badges || [],
+                  completedModules: newData.completed_modules || currentProgress.completedModules || [],
                 },
               });
+
             }
           )
           .subscribe();
 
         return channel;
       },
+
+      fetchRecentScores: async (userId) => {
+        if (!userId) return;
+        const { data, error } = await supabase
+          .from('leaderboard')
+          .select('score, created_at')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: true })
+          .limit(30);
+          
+        if (data) {
+          set({ recentScores: data });
+        }
+      },
+
+      subscribeToLeaderboard: (userId) => {
+        if (!userId) return null;
+        const channel = supabase
+          .channel(`leaderboard-${userId}`)
+          .on(
+            "postgres_changes",
+            {
+              event: "INSERT",
+              schema: "public",
+              table: "leaderboard",
+              filter: `user_id=eq.${userId}`,
+            },
+            () => {
+              get().fetchRecentScores(userId);
+            }
+          )
+          .subscribe();
+
+        return channel;
+      },
+
 
       // --- GAME METHODS ---
 
@@ -104,24 +135,60 @@ export const useGameStore = create(
         const user = useAuthStore.getState().user;
 
         // 1. Optimistic local update
+        const lastPlayDateStr = currentProgress.lastPlayDate;
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        let newStreak = get().streak || 0;
+        
+        if (!lastPlayDateStr) {
+          newStreak = 1;
+        } else {
+          const lastPlayDate = new Date(lastPlayDateStr);
+          const lastDate = new Date(lastPlayDate.getFullYear(), lastPlayDate.getMonth(), lastPlayDate.getDate());
+          const diffTime = today - lastDate;
+          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+          
+          if (diffDays === 1) {
+            newStreak += 1;
+          } else if (diffDays > 1) {
+            newStreak = 1;
+          }
+        }
+
+        // Achievement checks
+        const achievements = [...(currentProgress.badges || [])];
+        if (newTotalPoints >= 100 && !achievements.includes('First Milestone')) {
+          achievements.push('First Milestone');
+        }
+        if (newTotalPoints >= 500 && !achievements.includes('STEM Explorer')) {
+          achievements.push('STEM Explorer');
+        }
+        if (newStreak >= 7 && !achievements.includes('Weekly Warrior')) {
+          achievements.push('Weekly Warrior');
+        }
+
         const updatedProgress = {
           ...currentProgress,
           totalPoints: newTotalPoints,
           level: newLevel,
-          lastPlayDate: new Date().toISOString(),
+          streakDays: newStreak,
+          lastPlayDate: now.toISOString(),
+          badges: achievements,
         };
 
         set({
           userProgress: updatedProgress,
           totalPoints: newTotalPoints,
           level: newLevel,
+          streak: newStreak,
         });
 
         // 2. Database updates
         if (user?.id) {
           try {
             // Update individual game entry
-            await saveScore(user.id, newTotalPoints);
+            await saveScore(user.id, points); 
 
             // Update main profile for real-time sync across devices
             await supabase
@@ -129,13 +196,17 @@ export const useGameStore = create(
               .update({
                 total_points: newTotalPoints,
                 level: newLevel,
-                updated_at: new Date().toISOString(),
+                streak: newStreak,
+                badges: achievements,
+                updated_at: now.toISOString(),
               })
+
               .eq("id", user.id);
           } catch (error) {
             console.error("Failed to sync score to Supabase", error);
           }
         }
+
       },
 
       addBadge: (badge) => {
@@ -248,6 +319,58 @@ export const useGameStore = create(
           streak: 0,
         });
       },
+
+      syncLocalDataToSupabase: async (userId, retryCount = 0) => {
+        if (!userId) return;
+
+        const { userProgress, totalPoints, level, streak } = get();
+        
+        // Only sync if there is actually some progress to save
+        if (totalPoints === 0 && streak === 0 && (userProgress.badges?.length || 0) === 0) {
+          return;
+        }
+
+        try {
+          // Check if profile exists first (to handle latency)
+          const { data: profile, error: checkError } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("id", userId)
+            .single();
+          
+          if (checkError) {
+            if (checkError.code === 'PGRST116' && retryCount < 3) {
+              await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+              return get().syncLocalDataToSupabase(userId, retryCount + 1);
+            }
+            if (checkError.code !== 'PGRST116' || retryCount >= 3) {
+              console.error("Error checking profile for sync:", checkError.message || checkError, checkError.code);
+            }
+            return;
+          }
+
+          // 1. Update the profile
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .update({
+              total_points: totalPoints,
+              level: level,
+              streak: streak,
+              badges: userProgress.badges || [],
+              game_progress: get().gameProgress || {},
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", userId);
+
+
+          if (profileError) throw profileError;
+
+          console.log("Guest data successfully synced to Supabase.");
+        } catch (error) {
+          console.error("Error syncing guest data:", error.message || error, error.code);
+        }
+      },
+
     }),
     {
       name: "game-storage",

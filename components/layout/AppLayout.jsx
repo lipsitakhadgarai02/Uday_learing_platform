@@ -11,14 +11,11 @@ import { Footer } from "@/components/Footer";
 const AppLayout = ({ children }) => {
   const pathname = usePathname();
   const { user, isAuthenticated } = useAuthStore();
-  const { fetchUserProfile, subscribeToProfile } = useGameStore();
+  const { subscribeToProfile } = useGameStore();
   const { theme } = useTheme();
 
   useEffect(() => {
     if (isAuthenticated && user?.id) {
-      // Initial fetch of real database stats
-      fetchUserProfile(user.id);
-
       // Subscribe to live database changes (Real-time)
       const channel = subscribeToProfile(user.id);
 
@@ -28,7 +25,8 @@ const AppLayout = ({ children }) => {
         }
       };
     }
-  }, [isAuthenticated, user?.id, fetchUserProfile, subscribeToProfile]);
+  }, [isAuthenticated, user?.id, subscribeToProfile]);
+
 
   // Pages that should not show header/footer (full-screen experiences)
   const noLayoutPages = ["/login", "/signup", "/auth/login", "/auth/signup"];

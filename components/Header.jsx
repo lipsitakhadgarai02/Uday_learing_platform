@@ -90,27 +90,14 @@ const Header = () => {
 
     if (!user) return baseItems;
 
-    const roleItems = {
-      student: [
-        ...baseItems,
-        { href: '/student', label: 'Dashboard', icon: BarChart },
-        { href: '/progress', label: 'Progress', icon: TrendingUp },
-        { href: '/achievements', label: 'Achievements', icon: Award },
-      ],
-      teacher: [
-        ...baseItems,
-        { href: '/teacher', label: 'Dashboard', icon: BarChart },
-        { href: '/progress', label: 'Analytics', icon: TrendingUp },
-      ],
-      admin: [
-        ...baseItems,
-        { href: '/admin', label: 'Admin', icon: Shield },
-        { href: '/teacher', label: 'Analytics', icon: BarChart },
-      ]
-    };
-
-    return roleItems[user.role] || baseItems;
+    return [
+      ...baseItems,
+      { href: '/student', label: 'Dashboard', icon: BarChart },
+      { href: '/progress', label: 'Progress', icon: TrendingUp },
+      { href: '/achievements', label: 'Achievements', icon: Award },
+    ];
   };
+
 
   const navItems = getNavItems();
 
@@ -400,11 +387,12 @@ const Header = () => {
                   <DropdownMenuSeparator />
 
                   <DropdownMenuItem asChild>
-                    <Link href={`/${user.role}`} className="cursor-pointer">
+                    <Link href="/student" className="cursor-pointer">
                       <BarChart className="mr-2 h-4 w-4" />
                       <span>Dashboard</span>
                     </Link>
                   </DropdownMenuItem>
+
 
                   <DropdownMenuItem asChild>
                     <Link href="/progress" className="cursor-pointer">
